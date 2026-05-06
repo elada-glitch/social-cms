@@ -1,0 +1,166 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("manager") // admin | manager | designer
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  contentItems ContentItem[] @relation("AssignedTo")
+  @@map("users")
+}
+
+model Client {
+  id                  String   @id @default(cuid())
+  businessName        String
+  industry            String?
+  contactPerson       String?
+  contactEmail        String?
+  contactPhone        String?
+  activePlatforms     String   @default("[]") // JSON array
+  monthlyPackage      String?
+  monthlyQuota        Int      @default(0)
+  googleDriveLink     String?
+  canvaFolderLink     String?
+  canvaTemplateLink   String?
+  brandToneOfVoice    String?
+  targetAudience      String?
+  services            String?
+  forbiddenWords      String?
+  preferredCTAs       String?
+  notes               String?
+  isActive            Boolean  @default(true)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  contentItems        ContentItem[]
+  approvalLinks       ApprovalLink[]
+  reports             MonthlyReport[]
+  @@map("clients")
+}
+
+model ContentItem {
+  id                  String   @id @default(cuid())
+  clientId            String
+  client              Client   @relation(fields: [clientId], references: [id])
+  platform            String   // instagram | facebook | tiktok | linkedin | story | reel
+  contentType         String?  // post | reel | story | carousel | video
+  publishDate         DateTime?
+  status              String   @default("writing") // writing | design | sent_approval | needs_changes | approved | scheduled | published
+  assignedToId        String?
+  assignedTo          User?    @relation("AssignedTo", fields: [assignedToId], references: [id])
+
+  // Content fields
+  mainCopy            String?
+  hook                String?
+  caption             String?
+  cta                 String?
+  hashtags            String?
+  firstComment        String?
+  storyText           String?
+  reelScript          String?
+  videoShotList       String?
+  notesForDesigner    String?
+  notesForClient      String?
+
+  // Links
+  canvaLink           String?
+  googleDriveLink     String?
+
+  // Approval
+  approvalStatus      String?  // pending | approved | needs_changes
+  clientNotes         String?
+
+  // Publishing
+  scheduledAt         DateTime?
+  publishedAt         DateTime?
+  publishFailed       Boolean  @default(false)
+  publishError        String?
+
+  // Metrics
+  reach               Int?
+  impressions         Int?
+  likes               Int?
+  comments            Int?
+  shares              Int?
+  saves               Int?
+  clicks              Int?
+
+  internalNotes       String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  versions            ContentVersion[]
+  approvalLinks       ApprovalLink[]
+
+  @@map("content_items")
+}
+
+model ContentVersion {
+  id            String   @id @default(cuid())
+  contentItemId String
+  contentItem   ContentItem @relation(fields: [contentItemId], references: [id], onDelete: Cascade)
+  field         String   // which field was changed
+  value         String?
+  aiPrompt      String?
+  aiAction      String?  // generate | improve | shorter | emotional | sales | etc.
+  createdAt     DateTime @default(now())
+  @@map("content_versions")
+}
+
+model ApprovalLink {
+  id            String   @id @default(cuid())
+  token         String   @unique @default(cuid())
+  clientId      String
+  client        Client   @relation(fields: [clientId], references: [id])
+  contentItemId String?
+  contentItem   ContentItem? @relation(fields: [contentItemId], references: [id])
+  type          String   @default("single") // single | batch
+  title         String?
+  expiresAt     DateTime?
+  viewedAt      DateTime?
+  respondedAt   DateTime?
+  status        String   @default("pending") // pending | approved | needs_changes
+  clientName    String?
+  clientComment String?
+  createdAt     DateTime @default(now())
+  @@map("approval_links")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  type      String   // due_soon | missing_design | pending_approval | not_scheduled | publish_failed | quota_unfilled | report_missing
+  message   String
+  relatedId String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  @@map("notifications")
+}
+
+model MonthlyReport {
+  id           String   @id @default(cuid())
+  clientId     String
+  client       Client   @relation(fields: [clientId], references: [id])
+  month        Int
+  year         Int
+  totalPosts   Int      @default(0)
+  totalReach   Int      @default(0)
+  totalLikes   Int      @default(0)
+  totalComments Int     @default(0)
+  topPost      String?
+  summary      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  @@unique([clientId, month, year])
+  @@map("monthly_reports")
+}

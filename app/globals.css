@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground: #0f172a;
+  --background: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  direction: rtl;
+  font-family: 'Assistant', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Smooth focus ring */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
+/* RTL-aware utilities */
+.rtl-flip {
+  transform: scaleX(-1);
+}
+
+/* Card styles */
+.card {
+  @apply bg-white rounded-xl shadow-sm border border-gray-100 p-6;
+}
+
+.card-sm {
+  @apply bg-white rounded-lg shadow-sm border border-gray-100 p-4;
+}
+
+/* Form inputs */
+.input {
+  @apply w-full px-3 py-2 text-sm border border-gray-200 rounded-lg
+         bg-white text-gray-900 placeholder-gray-400
+         focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+         transition-all duration-150;
+}
+
+.textarea {
+  @apply w-full px-3 py-2 text-sm border border-gray-200 rounded-lg
+         bg-white text-gray-900 placeholder-gray-400
+         focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent
+         transition-all duration-150 resize-none;
+}
+
+.label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+/* Buttons */
+.btn {
+  @apply inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium
+         rounded-lg transition-all duration-150 cursor-pointer select-none;
+}
+
+.btn-primary {
+  @apply btn bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800
+         shadow-sm hover:shadow-md;
+}
+
+.btn-secondary {
+  @apply btn bg-white text-gray-700 border border-gray-200 hover:bg-gray-50
+         active:bg-gray-100 shadow-sm;
+}
+
+.btn-ghost {
+  @apply btn text-gray-600 hover:text-gray-900 hover:bg-gray-100 active:bg-gray-200;
+}
+
+.btn-danger {
+  @apply btn bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm;
+}
+
+/* Stat card */
+.stat-card {
+  @apply bg-white rounded-xl p-5 shadow-sm border border-gray-100 flex items-center gap-4;
+}
+
+/* Page header */
+.page-header {
+  @apply flex items-center justify-between mb-6;
+}
+
+.page-title {
+  @apply text-2xl font-bold text-gray-900;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* Status colors */
+.status-writing { @apply bg-gray-100 text-gray-700; }
+.status-design { @apply bg-blue-100 text-blue-700; }
+.status-sent_approval { @apply bg-yellow-100 text-yellow-700; }
+.status-needs_changes { @apply bg-red-100 text-red-700; }
+.status-approved { @apply bg-green-100 text-green-700; }
+.status-scheduled { @apply bg-purple-100 text-purple-700; }
+.status-published { @apply bg-emerald-100 text-emerald-700; }
+
+/* Platform colors */
+.platform-instagram { @apply bg-pink-100 text-pink-700; }
+.platform-facebook { @apply bg-blue-100 text-blue-700; }
+.platform-tiktok { @apply bg-gray-900 text-white; }
+.platform-linkedin { @apply bg-sky-100 text-sky-700; }
+.platform-story { @apply bg-orange-100 text-orange-700; }
+.platform-reel { @apply bg-purple-100 text-purple-700; }
